@@ -12,9 +12,9 @@
     - [ ] Read One
     - [ ] Read Many
     - [ ] Delete
-- [ ] Adicionar logs para escrita e leitura (loggar no console e também salvar em uma tabela no banco contendo ação, origem, timestamps, etc)
+- [ ] Adicionar logs para escrita e leitura (loggar no console e também salvar em uma tabela no banco)
 - [ ] Adicionar validação de input nas rotas
-- [ ] Adicionar autenticação com jwt nas rotas (gerar API-KEY para validar requisições)
+- [ ] Adicionar autenticação com jwt nas rotas
 - [ ] Adicionar error e success handlers personalizados
 - [ ] Adicionar documentação de rotas com swagger
 - [ ] Implementar fila com RabbitMQ
@@ -36,8 +36,3 @@
 - [ ] Adicionar error handler
 - [ ] Adicionar filtros e ordenação na tabela
 - [ ] Adicionar loading com skeleton
-
-### Próximas Features
-- [ ] Adicionar requisição para API de CEPs
-- [ ] Adicionar dark/light mode
-- [ ] Adicionar tradução pt-BR / en-US
