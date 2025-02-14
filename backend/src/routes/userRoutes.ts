@@ -1,25 +1,17 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
+import { UserController } from "../controllers/userController";
 
 const userRouter = Router();
+const userController = new UserController();
 
-userRouter.get('/', (_req: Request, res: Response) => {
-  res.json({ response: "This is the user 'GET' endpoint" });
-})
+userRouter.get('/', userController.getAllUsers);
 
-userRouter.get('/:id', (_req: Request, res: Response) => {
-  res.json({ response: "This is the user 'GET' but only one endpoint" });
-})
+userRouter.get('/:id', userController.getUserById);
 
-// userRouter.get('/', (_req: Request, res: Response) => {
-//   res.json({ response: "This is the user 'GET' endpoint" });
-// })
+userRouter.post('/', userController.createUser);
 
-// userRouter.get('/', (_req: Request, res: Response) => {
-//   res.json({ response: "This is the user 'GET' endpoint" });
-// })
+userRouter.put('/:id', userController.update);
 
-// userRouter.get('/', (_req: Request, res: Response) => {
-//   res.json({ response: "This is the user 'GET' endpoint" });
-// })
+userRouter.delete('/', userController.delete);
 
 export default userRouter;

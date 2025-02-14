@@ -5,13 +5,13 @@
 ### Backend
 - [x] Criar setup inicial 
 - [x] Criar conexão com banco de dados
-- [ ] Criar modelos do banco de dados
-- [ ] Criar rotas
-    - [ ] Create
-    - [ ] Update
-    - [ ] Read One
-    - [ ] Read Many
-    - [ ] Delete
+- [x] Criar modelos do banco de dados
+- [x] Criar rotas
+    - [x] Create
+    - [x] Update
+    - [x] Read One
+    - [x] Read Many
+    - [x] Delete
 - [ ] Adicionar logs para escrita e leitura (loggar no console e também salvar em uma tabela no banco)
 - [ ] Adicionar validação de input nas rotas
 - [ ] Adicionar autenticação com jwt nas rotas
