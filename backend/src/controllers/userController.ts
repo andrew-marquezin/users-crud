@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
 import { UserModel } from "../models/userModel";
+import { CreateUserDto } from "../interfaces/UserDto";
 
 export class UserController {
   async create(req: Request, res: Response) {
     try {
-      const newUser = new UserModel(req.body);
+      const input: CreateUserDto = req.body;
+
+      const newUser = new UserModel(input);
       const savedUser = await newUser.save();
+
       res.status(201).json(savedUser);
     } catch (e) {
       res.status(400).json({ message: e.message });
