@@ -10,13 +10,3 @@ export default mongoose.connect(MONGO_URI)
   .catch(e => {
     console.error('Error connecting to the database: ', e);
   });
-
-// export const connectDB = async () => {
-//   try {
-//     await mongoose.connect(MONGO_URI);
-//     console.log('Database connected');
-//   } catch (e) {
-//     console.error('Error connecting to the database: ', e);
-//     process.exit(1);
-//   }
-// }
