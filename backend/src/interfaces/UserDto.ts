@@ -8,10 +8,17 @@ export interface IAddress {
   zipCode: string;
 }
 
+export interface IPhoneNumbers {
+  _id?: mongoose.Types.ObjectId;
+  number: string;
+  type: string;
+}
+
 export interface CreateUserDto {
   firstName: string;
   lastName: string;
   address: IAddress;
+  phoneNumbers: IPhoneNumbers[];
   dateOfBirth: Date;
   email: string;
   documentNumber: string;

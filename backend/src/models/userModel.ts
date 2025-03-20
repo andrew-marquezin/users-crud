@@ -7,10 +7,16 @@ interface IAddress extends Document {
   zipCode: string;
 }
 
+interface IPhoneNumbers extends Document {
+  number: string;
+  type: string;
+}
+
 interface IUser extends Document {
   firstName: string;
   lastName: string;
   address: IAddress;
+  phoneNumbers: IPhoneNumbers[];
   dateOfBirth: Date;
   email: string;
   documentNumber: string;
@@ -23,25 +29,16 @@ const addressSchema = new Schema({
   zipCode: { type: String, required: true },
 })
 
-// interface User {
-//   firstName: string;
-//   lastName: string;
-//   phoneNumbers: {
-//     number: string;
-//     type: string;
-//   }[];
-//   email: string;
-//   adresses: {
-//     street: string;
-//     city: string;
-//     state: string;
-//   }[]
-// }
+const phoneNumbersSchema = new Schema({
+  number: { type: String, required: true },
+  type: { type: String, required: true },
+})
 
 const userScema = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  address: addressSchema,
+  address: [addressSchema],
+  phoneNumbers: [phoneNumbersSchema],
   dateOfBirth: { type: Date, required: true },
   email: { type: String, required: true },
   documentNumber: { type: String, required: true },

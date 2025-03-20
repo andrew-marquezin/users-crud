@@ -9,8 +9,7 @@ export default function TextInput({ label, name, value, onChange }: TextInputPro
   return (
     <div className="inputLabelContainer">
       <label className="inputLabel">
-        {label}
-        <input
+        {label}: <input
           type="text"
           name={name}
           className="textInput"
