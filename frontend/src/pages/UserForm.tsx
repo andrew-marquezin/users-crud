@@ -1,7 +1,13 @@
 import React, { useState } from "react"
+import {
+  Typography,
+  Input,
+  Form,
+  Button,
+  Row,
+  Col,
+} from "antd"
 import { AddressInputDTO, PhoneInputDTO, UserInputDTO } from "../types/UserType"
-import TextInput from "../components/TextInput"
-import SubmitBtn from "../components/SubmitBtn";
 
 const emptyFields = {
   firstName: '',
@@ -12,10 +18,14 @@ const emptyFields = {
   documentNumber: '',
 }
 
+const { Title } = Typography;
+
 export default function UserForm() {
   const [userData, setUserData] = useState<UserInputDTO>(emptyFields);
   const [addressesState, setAdressesState] = useState<AddressInputDTO[]>([]);
   const [phonesState, setPhonesState] = useState<PhoneInputDTO[]>([]);
+
+  const [form] = Form.useForm();
 
   const addPhoneNumber = () => {
     setPhonesState([...phonesState, {
@@ -63,100 +73,31 @@ export default function UserForm() {
 
   return (
     <div>
-      <h2>User Form</h2>
-      <form
-        onSubmit={handleSubmit}
+      <Title level={2}>User Form</Title>
+      <Form
+        form={form}
+        name="userForm"
+        onFinish={handleSubmit}
+        style={{ maxWidth: '500' }}
       >
-        <TextInput
-          label="First Name"
-          name="firstName"
-          value={userData.firstName}
-          onChange={handleChange}
-        />
-        <TextInput
-          label="Last Name"
-          name="lastName"
-          value={userData.lastName}
-          onChange={handleChange}
-        />
-        <TextInput
-          label="Email"
-          name="email"
-          value={userData.email}
-          onChange={handleChange}
-        />
-        <TextInput
-          label="Document Number"
-          name="documentNumber"
-          value={userData.documentNumber}
-          onChange={handleChange}
-        />
-        <div className="addresses">
-          <p>Adresses</p>
-          {addressesState.map((address, index) => (
-            <div key={index}>
-              <TextInput
-                label="Street"
-                name="street"
-                value={address.street}
-                onChange={(e) => handleUpdateAddress('street', e.target.value, index)}
-              />
-              <TextInput
-                label="City"
-                name="city"
-                value={address.city}
-                onChange={(e) => handleUpdateAddress('city', e.target.value, index)}
-              />
-              <TextInput
-                label="State"
-                name="state"
-                value={address.state}
-                onChange={(e) => handleUpdateAddress('state', e.target.value, index)}
-              />
-              <TextInput
-                label="Zip Code"
-                name="zipCode"
-                value={address.zipCode}
-                onChange={(e) => handleUpdateAddress('zipCode', e.target.value, index)}
-              />
-              <br />
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={addAddress}
-          >
-            Add Address
-          </button>
-        </div>
-        <div className="phones">
-          <p>Phones</p>
-          {phonesState.map((phone, index) => (
-            <div key={index}>
-              <TextInput
-                label="Number"
-                name="number"
-                value={phone.number}
-                onChange={(e) => handleUpdatePhone('number', e.target.value, index)}
-              />
-              <TextInput
-                label="Type"
-                name="type"
-                value={phone.type}
-                onChange={(e) => handleUpdatePhone('type', e.target.value, index)}
-              />
-              <br />
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={addPhoneNumber}
-          >
-            Add Phone
-          </button>
-        </div>
-        <SubmitBtn />
-      </form>
+        <Row>
+          <Col>
+            <Form.Item
+              name="firstName"
+              label="First Name"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+            >
+              <Input placeholder="Phillip" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   )
 }
