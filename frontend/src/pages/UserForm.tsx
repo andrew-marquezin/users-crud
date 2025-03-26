@@ -1,4 +1,3 @@
-import React, { useState } from "react"
 import {
   Typography,
   Input,
@@ -6,69 +5,24 @@ import {
   Button,
   Row,
   Col,
+  DatePicker,
 } from "antd"
-import { AddressInputDTO, PhoneInputDTO, UserInputDTO } from "../types/UserType"
-
-const emptyFields = {
-  firstName: '',
-  lastName: '',
-  addresses: [],
-  phoneNumbers: [],
-  email: '',
-  documentNumber: '',
-}
+import dayjs from "dayjs"
+import { normalizeDocumentNumber } from "../utils/normalizers";
+import { validateDocumentNumberInput } from "../utils/validators";
+import { UserInputDTO } from "../types/UserType"
+import AddressForm from "../components/addressForm";
+import PhoneForm from "../components/phoneForm";
 
 const { Title } = Typography;
 
 export default function UserForm() {
-  const [userData, setUserData] = useState<UserInputDTO>(emptyFields);
-  const [addressesState, setAdressesState] = useState<AddressInputDTO[]>([]);
-  const [phonesState, setPhonesState] = useState<PhoneInputDTO[]>([]);
 
   const [form] = Form.useForm();
 
-  const addPhoneNumber = () => {
-    setPhonesState([...phonesState, {
-      number: '',
-      type: '',
-    }])
-  }
-
-  const handleUpdatePhone = (field: keyof PhoneInputDTO, value: string, index: number) => {
-    const newPhones = [...phonesState];
-    newPhones[index][field] = value;
-    setPhonesState(newPhones);
-  }
-
-  const addAddress = () => {
-    setAdressesState([...addressesState, {
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-    }]);
-  }
-
-  const handleUpdateAddress = (field: keyof AddressInputDTO, value: string, index: number) => {
-    const newAddresses = [...addressesState];
-    newAddresses[index][field] = value;
-    setAdressesState(newAddresses);
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
-  }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setUserData({
-      ...userData,
-      addresses: addressesState,
-      phoneNumbers: phonesState,
-    });
-    console.log('User submitted');
-    setUserData(emptyFields);
+  const onFinish = (e: UserInputDTO) => {
+    e = { ...e, documentNumber: e.documentNumber.replace(/\D/g, '') }
+    console.log(e)
   }
 
   return (
@@ -77,21 +31,102 @@ export default function UserForm() {
       <Form
         form={form}
         name="userForm"
-        onFinish={handleSubmit}
+        onFinish={onFinish}
+        requiredMark={false}
+        validateTrigger="onBlur"
+        initialValues={{ addresses: [], phoneNumbers: [] }}
         style={{ maxWidth: '500' }}
       >
-        <Row>
-          <Col>
+        <Row gutter={16}>
+          <Col xs={24} sm={12} md={12} lg={8}>
             <Form.Item
               name="firstName"
               label="First Name"
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
+              rules={[
+                { required: true, message: 'Please input your first name!' },
+                { max: 50 },
+              ]}
             >
               <Input placeholder="Phillip" />
             </Form.Item>
           </Col>
+          <Col xs={24} sm={12} md={12} lg={8}>
+            <Form.Item
+              name="lastName"
+              label="Last Name"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              rules={[
+                { required: true, message: 'Please input your last name!' },
+                { max: 50 },
+              ]}
+            >
+              <Input placeholder="Smith" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12} md={12} lg={8}>
+            <Form.Item
+              name="dateOfBirth"
+              label="Birth Date"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              getValueProps={(value) => ({ value: value && dayjs(value, 'DD/MM/YYYY') })}
+              normalize={(value) => value && value.format('DD-MM-YYYY')}
+              rules={[
+                { required: true, message: 'Please input your birth date!' },
+              ]}
+            >
+              <DatePicker
+                format="DD/MM/YYYY"
+                style={{ width: "100%" }}
+                disabledDate={
+                  (current) => current && current > dayjs().endOf('day')
+                }
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12} md={12} lg={8}>
+            <Form.Item
+              name="documentNumber"
+              label="Document Number"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              normalize={normalizeDocumentNumber}
+              rules={[
+                { required: true, message: 'Please input your document number!' },
+                { validator: validateDocumentNumberInput, message: 'Invalid CPF!' },
+              ]}
+            >
+              <Input
+                placeholder="123.456.789-00"
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={48} md={36} lg={8}>
+            <Form.Item
+              name="email"
+              label="Email"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              rules={[
+                { required: true, message: 'Please input your email!' },
+                { type: 'email', message: 'Invalid email!' },
+                { max: 50 },
+              ]}
+            >
+              <Input type="email" placeholder="example@example.com" />
+            </Form.Item>
+          </Col>
         </Row>
+
+        <Title level={4}>Addresses</Title>
+        <AddressForm />
+
+        <Title level={4}>Phone Numbers</Title>
+        <PhoneForm />
+
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Submit
