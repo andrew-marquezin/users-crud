@@ -8,11 +8,11 @@ import {
   DatePicker,
 } from "antd"
 import dayjs from "dayjs"
-import { normalizeDocumentNumber } from "../utils/normalizers";
-import { validateDocumentNumberInput } from "../utils/validators";
+import { normalizeDocumentNumber } from "../utils/Normalizers";
+import { validateDocumentNumberInput } from "../utils/Validators";
 import { UserInputDTO } from "../types/UserType"
-import AddressForm from "../components/addressForm";
-import PhoneForm from "../components/phoneForm";
+import AddressForm from "../components/AddressForm";
+import PhoneForm from "../components/PhoneForm";
 
 const { Title } = Typography;
 
