@@ -17,7 +17,7 @@ export interface IPhoneNumbers {
 export interface CreateUserDto {
   firstName: string;
   lastName: string;
-  address: IAddress;
+  address: IAddress[];
   phoneNumbers: IPhoneNumbers[];
   dateOfBirth: Date;
   email: string;

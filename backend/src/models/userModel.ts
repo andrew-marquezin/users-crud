@@ -15,7 +15,7 @@ interface IPhoneNumbers extends Document {
 interface IUser extends Document {
   firstName: string;
   lastName: string;
-  address: IAddress;
+  address: IAddress[];
   phoneNumbers: IPhoneNumbers[];
   dateOfBirth: Date;
   email: string;

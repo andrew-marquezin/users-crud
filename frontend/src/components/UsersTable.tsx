@@ -1,4 +1,7 @@
 import { Space, Table, TableProps, Typography } from "antd";
+import { useEffect, useState } from "react";
+import api from "../utils/api";
+import { UserType } from "../types/UserType";
 
 interface DataType {
   id: string;
@@ -66,6 +69,23 @@ const data: DataType[] = [
 ]
 
 export default function UsersTable() {
+
+  const [users, setUsers] = useState<UserType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    console.log('UsersTable mounted');
+    setLoading(true);
+    api.get('/users').then(response => {
+      if (response.status === 200) {
+        setUsers(response.data);
+      } else {
+        setUsers([]);
+      }
+      setLoading(false);
+    });
+  }, []);
+
   return (
     <>
       <Typography.Title level={2}>Users Table</Typography.Title>
