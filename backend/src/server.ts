@@ -1,5 +1,5 @@
 import { app } from './app';
-import './database/database';
+import './utils/database';
 
 const PORT = process.env.PORT || 3001;
 
