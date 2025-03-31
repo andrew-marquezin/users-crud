@@ -1,7 +1,7 @@
 import { Response } from "express";
 
-class ApiResponseHandler {
-  successResponse(res: Response, message: string) {
+export class ApiResponseHandler {
+  static successResponse(res: Response, message: string) {
     const resData = {
       status: 1,
       message,
@@ -9,7 +9,7 @@ class ApiResponseHandler {
     return res.status(200).json(resData);
   }
 
-  successResponseWithData(res: Response, message: string, data: unknown) {
+  static successResponseWithData(res: Response, message: string, data: unknown) {
     const resData = {
       status: 1,
       message,
@@ -18,11 +18,11 @@ class ApiResponseHandler {
     return res.status(200).json(resData);
   }
 
-  noContentResponse(res: Response) {
+  static noContentResponse(res: Response) {
     return res.status(204).json();
   }
 
-  createdResponse(res: Response, message: string, data: unknown) {
+  static createdResponse(res: Response, message: string, data: unknown) {
     const resData = {
       status: 1,
       message,
@@ -31,7 +31,7 @@ class ApiResponseHandler {
     return res.status(201).json(resData);
   }
 
-  internalErrorResponse(res: Response, message: string) {
+  static internalErrorResponse(res: Response, message: string) {
     const resData = {
       status: 0,
       message,
@@ -39,7 +39,7 @@ class ApiResponseHandler {
     return res.status(500).json(resData);
   }
 
-  notFoundResponse(res: Response, message: string) {
+  static notFoundResponse(res: Response, message: string) {
     const resData = {
       status: 0,
       message,
@@ -47,7 +47,7 @@ class ApiResponseHandler {
     return res.status(404).json(resData);
   }
 
-  validationErrorResponse(res: Response, message: string) {
+  static validationErrorResponse(res: Response, message: string) {
     const resData = {
       status: 0,
       message,
@@ -55,7 +55,7 @@ class ApiResponseHandler {
     return res.status(400).json(resData);
   }
 
-  validationErrorWithData(res: Response, message: string, data: unknown) {
+  static validationErrorWithData(res: Response, message: string, data: unknown) {
     const resData = {
       status: 1,
       message,
@@ -64,7 +64,7 @@ class ApiResponseHandler {
     return res.status(400).json(resData);
   }
 
-  unauthorizedResponse(res: Response, message: string) {
+  static unauthorizedResponse(res: Response, message: string) {
     const resData = {
       status: 0,
       message,

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserModel } from "../models/userModel";
 import { CreateUserDto } from "../interfaces/UserDto";
+import { ApiResponseHandler } from "../utils/responseHandler";
 
 export class UserController {
   async create(req: Request, res: Response) {
@@ -10,18 +11,32 @@ export class UserController {
       const newUser = new UserModel(input);
       const savedUser = await newUser.save();
 
-      res.status(201).json(savedUser);
+      ApiResponseHandler.createdResponse(
+        res,
+        "User created successfully",
+        savedUser,
+      );
     } catch (e) {
-      res.status(400).json({ message: e.message });
+      ApiResponseHandler.validationErrorResponse(
+        res,
+        e.message,
+      );
     }
   }
 
   async getAll(_req: Request, res: Response) {
     try {
       const users = await UserModel.find();
-      res.status(200).json(users);
+      ApiResponseHandler.successResponseWithData(
+        res,
+        "Users retrieved successfully",
+        users,
+      );
     } catch (e) {
-      res.status(400).json({ message: e.message });
+      ApiResponseHandler.internalErrorResponse(
+        res,
+        e.message,
+      );
     }
   }
 
@@ -30,11 +45,21 @@ export class UserController {
       const { id } = req.params;
       const user = await UserModel.findById(id);
       if (!user) {
-        res.status(404).json({ message: "User not found" });
+        ApiResponseHandler.notFoundResponse(
+          res,
+          "User not found",
+        );
       }
-      res.status(200).json(user);
+      ApiResponseHandler.successResponseWithData(
+        res,
+        "User retrieved successfully",
+        user,
+      );
     } catch (e) {
-      res.status(400).json({ message: e.message });
+      ApiResponseHandler.internalErrorResponse(
+        res,
+        e.message,
+      );
     }
   }
 
@@ -43,14 +68,30 @@ export class UserController {
       const { id } = req.params;
       const user = await UserModel.findById(id);
       if (!user) {
-        res.status(404).json({ message: "User not found" });
+        ApiResponseHandler.notFoundResponse(
+          res,
+          "User not found",
+        );
       }
-      const updatedUser = await UserModel.findByIdAndUpdate(id,
+      return await UserModel.findByIdAndUpdate(id,
         { $set: { ...req.body } }, { new: true }
-      )
-      res.status(200).json(updatedUser);
+      ).then((updatedUser) => {
+        ApiResponseHandler.successResponseWithData(
+          res,
+          "User updated successfully",
+          updatedUser,
+        );
+      }).catch((e) => {
+        ApiResponseHandler.validationErrorResponse(
+          res,
+          e.message,
+        );
+      });
     } catch (e) {
-      res.status(400).json({ message: e.message });
+      ApiResponseHandler.internalErrorResponse(
+        res,
+        e.message,
+      );
     }
   }
 
@@ -59,11 +100,17 @@ export class UserController {
       const { id } = req.params;
       const deletedUser = await UserModel.findByIdAndDelete(id);
       if (!deletedUser) {
-        res.status(404).json({ message: "User not found" });
+        ApiResponseHandler.notFoundResponse(
+          res,
+          "User not found",
+        );
       }
-      res.status(204).json();
+      ApiResponseHandler.noContentResponse(res);
     } catch (e) {
-      res.status(400).json({ message: e.message });
+      ApiResponseHandler.internalErrorResponse(
+        res,
+        e.message,
+      );
     }
   }
 }
