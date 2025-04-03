@@ -13,6 +13,7 @@ import { validateDocumentNumberInput } from "../utils/Validators";
 import { UserInputDTO } from "../types/UserType"
 import AddressForm from "../components/AddressForm";
 import PhoneForm from "../components/PhoneForm";
+import api from "../utils/api";
 
 const { Title } = Typography;
 
@@ -22,7 +23,8 @@ export default function UserForm() {
 
   const onFinish = (e: UserInputDTO) => {
     e = { ...e, documentNumber: e.documentNumber.replace(/\D/g, '') }
-    console.log(e)
+    api.post('/api/users', e).then((res) => console.log(res))
+    form.resetFields();
   }
 
   return (

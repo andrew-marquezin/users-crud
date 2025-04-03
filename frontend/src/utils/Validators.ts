@@ -23,7 +23,6 @@ function validateCPF(cpf: string): boolean {
 }
 
 export const validateDocumentNumberInput = (_: unknown, value: string) => {
-  console.log(value)
   if (!validateCPF(value)) return Promise.reject("Invalid document number input");
   return Promise.resolve();
 }
