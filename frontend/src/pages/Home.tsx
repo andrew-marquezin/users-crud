@@ -1,11 +1,15 @@
+import { Button, Typography } from "antd"
 import { Link } from "react-router"
 
 export default function Home() {
   return (
     <div>
-      <h1>Home Page</h1>
+      <Typography.Title level={1}>Home Page</Typography.Title>
       <Link to={'/userForm'}>
-        <button>Create User</button>
+        <Button>Create User</Button>
+      </Link>
+      <Link to={'/usersTable'}>
+        <Button>Table of Users</Button>
       </Link>
       {/* <button onClick={() => setShowModal(true)}>
         Create User

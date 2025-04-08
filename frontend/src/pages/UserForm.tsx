@@ -1,162 +1,140 @@
-import React, { useState } from "react"
-import { AddressInputDTO, PhoneInputDTO, UserInputDTO } from "../types/UserType"
-import TextInput from "../components/TextInput"
-import SubmitBtn from "../components/SubmitBtn";
+import {
+  Typography,
+  Input,
+  Form,
+  Button,
+  Row,
+  Col,
+  DatePicker,
+} from "antd"
+import dayjs from "dayjs"
+import { normalizeDocumentNumber } from "../utils/Normalizers";
+import { validateDocumentNumberInput } from "../utils/Validators";
+import { UserInputDTO } from "../types/UserType"
+import AddressForm from "../components/AddressForm";
+import PhoneForm from "../components/PhoneForm";
+import api from "../utils/api";
 
-const emptyFields = {
-  firstName: '',
-  lastName: '',
-  addresses: [],
-  phoneNumbers: [],
-  email: '',
-  documentNumber: '',
-}
+const { Title } = Typography;
 
 export default function UserForm() {
-  const [userData, setUserData] = useState<UserInputDTO>(emptyFields);
-  const [addressesState, setAdressesState] = useState<AddressInputDTO[]>([]);
-  const [phonesState, setPhonesState] = useState<PhoneInputDTO[]>([]);
 
-  const addPhoneNumber = () => {
-    setPhonesState([...phonesState, {
-      number: '',
-      type: '',
-    }])
-  }
+  const [form] = Form.useForm();
 
-  const handleUpdatePhone = (field: keyof PhoneInputDTO, value: string, index: number) => {
-    const newPhones = [...phonesState];
-    newPhones[index][field] = value;
-    setPhonesState(newPhones);
-  }
-
-  const addAddress = () => {
-    setAdressesState([...addressesState, {
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-    }]);
-  }
-
-  const handleUpdateAddress = (field: keyof AddressInputDTO, value: string, index: number) => {
-    const newAddresses = [...addressesState];
-    newAddresses[index][field] = value;
-    setAdressesState(newAddresses);
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
-  }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setUserData({
-      ...userData,
-      addresses: addressesState,
-      phoneNumbers: phonesState,
-    });
-    console.log('User submitted');
-    setUserData(emptyFields);
+  const onFinish = (e: UserInputDTO) => {
+    e = { ...e, documentNumber: e.documentNumber.replace(/\D/g, '') }
+    api.post('/', e).then((res) => console.log(res))
+    form.resetFields();
   }
 
   return (
     <div>
-      <h2>User Form</h2>
-      <form
-        onSubmit={handleSubmit}
+      <Title level={2}>User Form</Title>
+      <Form
+        form={form}
+        name="userForm"
+        onFinish={onFinish}
+        requiredMark={false}
+        validateTrigger="onBlur"
+        initialValues={{ addresses: [], phoneNumbers: [] }}
+        style={{ maxWidth: '500' }}
       >
-        <TextInput
-          label="First Name"
-          name="firstName"
-          value={userData.firstName}
-          onChange={handleChange}
-        />
-        <TextInput
-          label="Last Name"
-          name="lastName"
-          value={userData.lastName}
-          onChange={handleChange}
-        />
-        <TextInput
-          label="Email"
-          name="email"
-          value={userData.email}
-          onChange={handleChange}
-        />
-        <TextInput
-          label="Document Number"
-          name="documentNumber"
-          value={userData.documentNumber}
-          onChange={handleChange}
-        />
-        <div className="addresses">
-          <p>Adresses</p>
-          {addressesState.map((address, index) => (
-            <div key={index}>
-              <TextInput
-                label="Street"
-                name="street"
-                value={address.street}
-                onChange={(e) => handleUpdateAddress('street', e.target.value, index)}
+        <Row gutter={16}>
+          <Col xs={24} sm={12} md={12} lg={8}>
+            <Form.Item
+              name="firstName"
+              label="First Name"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              rules={[
+                { required: true, message: 'Please input your first name!' },
+                { max: 50 },
+              ]}
+            >
+              <Input placeholder="Phillip" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12} md={12} lg={8}>
+            <Form.Item
+              name="lastName"
+              label="Last Name"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              rules={[
+                { required: true, message: 'Please input your last name!' },
+                { max: 50 },
+              ]}
+            >
+              <Input placeholder="Smith" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12} md={12} lg={8}>
+            <Form.Item
+              name="dateOfBirth"
+              label="Birth Date"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              getValueProps={(value) => ({ value: value && dayjs(value, 'DD/MM/YYYY') })}
+              normalize={(value) => value && value.format('DD-MM-YYYY')}
+              rules={[
+                { required: true, message: 'Please input your birth date!' },
+              ]}
+            >
+              <DatePicker
+                format="DD/MM/YYYY"
+                style={{ width: "100%" }}
+                disabledDate={
+                  (current) => current && current > dayjs().endOf('day')
+                }
               />
-              <TextInput
-                label="City"
-                name="city"
-                value={address.city}
-                onChange={(e) => handleUpdateAddress('city', e.target.value, index)}
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12} md={12} lg={8}>
+            <Form.Item
+              name="documentNumber"
+              label="Document Number"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              normalize={normalizeDocumentNumber}
+              rules={[
+                { required: true, message: 'Please input your document number!' },
+                { validator: validateDocumentNumberInput, message: 'Invalid CPF!' },
+              ]}
+            >
+              <Input
+                placeholder="123.456.789-00"
               />
-              <TextInput
-                label="State"
-                name="state"
-                value={address.state}
-                onChange={(e) => handleUpdateAddress('state', e.target.value, index)}
-              />
-              <TextInput
-                label="Zip Code"
-                name="zipCode"
-                value={address.zipCode}
-                onChange={(e) => handleUpdateAddress('zipCode', e.target.value, index)}
-              />
-              <br />
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={addAddress}
-          >
-            Add Address
-          </button>
-        </div>
-        <div className="phones">
-          <p>Phones</p>
-          {phonesState.map((phone, index) => (
-            <div key={index}>
-              <TextInput
-                label="Number"
-                name="number"
-                value={phone.number}
-                onChange={(e) => handleUpdatePhone('number', e.target.value, index)}
-              />
-              <TextInput
-                label="Type"
-                name="type"
-                value={phone.type}
-                onChange={(e) => handleUpdatePhone('type', e.target.value, index)}
-              />
-              <br />
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={addPhoneNumber}
-          >
-            Add Phone
-          </button>
-        </div>
-        <SubmitBtn />
-      </form>
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={48} md={36} lg={8}>
+            <Form.Item
+              name="email"
+              label="Email"
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              rules={[
+                { required: true, message: 'Please input your email!' },
+                { type: 'email', message: 'Invalid email!' },
+                { max: 50 },
+              ]}
+            >
+              <Input type="email" placeholder="example@example.com" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Title level={4}>Addresses</Title>
+        <AddressForm />
+
+        <Title level={4}>Phone Numbers</Title>
+        <PhoneForm />
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   )
 }

@@ -40,6 +40,7 @@ export type UserInputDTO = {
   lastName: string;
   addresses: AddressInputDTO[];
   phoneNumbers: PhoneInputDTO[];
+  dateOfBirth: Date;
   email: string;
   documentNumber: string;
 }
