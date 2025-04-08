@@ -23,7 +23,7 @@ export default function UserForm() {
 
   const onFinish = (e: UserInputDTO) => {
     e = { ...e, documentNumber: e.documentNumber.replace(/\D/g, '') }
-    api.post('/api/users', e).then((res) => console.log(res))
+    api.post('/', e).then((res) => console.log(res))
     form.resetFields();
   }
 
