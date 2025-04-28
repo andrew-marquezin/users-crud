@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MONGO_URI = process.env.MONGO_URL ||
+const MONGO_URI = process.env.MONGO_URI ||
   'mongodb://admin:admin@127.0.0.1:27017/';
 
 export default mongoose.connect(MONGO_URI)
