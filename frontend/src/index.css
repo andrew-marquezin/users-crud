@@ -1,3 +1,13 @@
+:root {
+  --bg-color: #f0f0f5;
+  --text-color: #1e1e1e;
+}
+
+.dark {
+  --bg-color: #1e1e1e;
+  --text-color: #e6e6e6;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,10 +15,12 @@
 }
 
 body {
-  background-color: #f0f0f5;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   align-items: center;
   justify-content: center;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* :root {
