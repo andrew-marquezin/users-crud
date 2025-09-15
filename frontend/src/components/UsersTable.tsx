@@ -1,23 +1,24 @@
-import { Space, Table, TableProps, Typography } from "antd";
+import { Button, Space, Table, TableProps, Typography, Col, Skeleton } from "antd";
 import { useEffect, useState } from "react";
 import api from "../utils/api";
 import { UserType } from "../types/UserType";
 
-interface DataType {
-  id: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  documentNumber: string;
-  email: string;
-}
+// interface DataType {
+//   id: string;
+//   firstName: string;
+//   lastName: string;
+//   dateOfBirth: string;
+//   documentNumber: string;
+//   email: string;
+// }
 
-const columns: TableProps<DataType>['columns'] = [
+const columns: TableProps<UserType>['columns'] = [
+  // {
+  //   title: 'ID',
+  //   dataIndex: 'id',
+  //   key: 'id',
+  // }, 
   {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
-  }, {
     title: 'First Name',
     dataIndex: 'firstName',
     key: 'firstName',
@@ -43,28 +44,34 @@ const columns: TableProps<DataType>['columns'] = [
     fixed: 'right',
     render: () => (
       <Space>
-        <Typography.Link>Edit</Typography.Link>
-        <Typography.Link>Delete</Typography.Link>
+        <Col className="action-buttons">
+          <Button variant="outlined" color="primary">Edit</Button>
+          <Button variant="filled" color="danger">Delete</Button>
+        </Col>
       </Space>
     )
   }
 ]
 
-const data: DataType[] = [
+const data: UserType[] = [
   {
     id: '001',
     firstName: 'Phillip',
     lastName: 'Smith',
-    dateOfBirth: '01/01/1990',
+    dateOfBirth: new Date(1990, 0, 1),
     documentNumber: '12345678909',
     email: 'email@example.com',
+    addresses: [],
+    phoneNumbers: [],
   }, {
     id: '002',
     firstName: 'Phillip',
     lastName: '2',
-    dateOfBirth: '01/01/1990',
+    dateOfBirth: new Date(1990, 0, 1),
     documentNumber: '50302006818',
     email: 'outro_email@example.com',
+    addresses: [],
+    phoneNumbers: [],
   },
 ]
 
@@ -76,26 +83,32 @@ export default function UsersTable() {
   useEffect(() => {
     console.log('UsersTable mounted');
     setLoading(true);
-    api.get('/users').then(response => {
+    api.get('/').then(response => {
       if (response.status === 200) {
-        setUsers(response.data);
-      } else {
-        setUsers([]);
+        if (Array.isArray(response.data.data)) {
+          setUsers(response.data.data);
+          console.log(response.data.data);
+        } else {
+          console.error('Expected array, got: ', response.data.data);
+          setUsers([]);
+        }
       }
       setLoading(false);
     });
   }, []);
 
   return (
-    <>
+    <div>
+      {loading && <Skeleton active />}
       <Typography.Title level={2}>Users Table</Typography.Title>
-      <Table<DataType>
+      <Table<UserType>
+        rowKey="_id"
         columns={columns}
-        dataSource={data}
+        dataSource={users}
         bordered={true}
         pagination={false}
         scroll={{ x: 'max-content', y: 400 }}
       />
-    </>
+    </div>
   )
 }

@@ -23,6 +23,27 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+#home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20vh;
+}
+
+.home-button {
+  margin: 0 8px;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.action-buttons button {
+  width: 100%;
+}
+
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

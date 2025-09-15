@@ -6,6 +6,7 @@ import {
   Row,
   Col,
   DatePicker,
+  notification,
 } from "antd"
 import dayjs from "dayjs"
 import { normalizeDocumentNumber } from "../utils/Normalizers";
@@ -13,19 +14,29 @@ import { validateDocumentNumberInput } from "../utils/Validators";
 import { UserInputDTO } from "../types/UserType"
 import AddressForm from "../components/AddressForm";
 import PhoneForm from "../components/PhoneForm";
-import api from "../utils/api";
+import back from "../utils/api";
 
 const { Title } = Typography;
 
 export default function UserForm() {
 
   const [form] = Form.useForm();
+  const [api] = notification.useNotification();
+
+  const openNotification = () => api.info({
+    message: 'Usuário criado com sucesso!',
+    placement: 'bottomLeft',
+  })
 
   const onFinish = (e: UserInputDTO) => {
     e = { ...e, documentNumber: e.documentNumber.replace(/\D/g, '') }
-    api.post('/', e).then((res) => console.log(res))
+    back.post('/', e).then((res) => {
+      console.log(res);
+      openNotification();
+    })
     form.resetFields();
   }
+
 
   return (
     <div>
@@ -75,7 +86,7 @@ export default function UserForm() {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               getValueProps={(value) => ({ value: value && dayjs(value, 'DD/MM/YYYY') })}
-              normalize={(value) => value && value.format('DD-MM-YYYY')}
+              // normalize={(value) => value && value.format('DD-MM-YYYY')}
               rules={[
                 { required: true, message: 'Please input your birth date!' },
               ]}
