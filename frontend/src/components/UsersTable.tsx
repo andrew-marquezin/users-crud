@@ -1,23 +1,11 @@
 import { Button, Space, Table, TableProps, Typography, Col, Skeleton } from "antd";
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import api from "../utils/api";
 import { UserType } from "../types/UserType";
 
-// interface DataType {
-//   id: string;
-//   firstName: string;
-//   lastName: string;
-//   dateOfBirth: string;
-//   documentNumber: string;
-//   email: string;
-// }
 
 const columns: TableProps<UserType>['columns'] = [
-  // {
-  //   title: 'ID',
-  //   dataIndex: 'id',
-  //   key: 'id',
-  // }, 
   {
     title: 'First Name',
     dataIndex: 'firstName',
@@ -30,6 +18,7 @@ const columns: TableProps<UserType>['columns'] = [
     title: 'Date of Birth',
     dataIndex: 'dateOfBirth',
     key: 'dateOfBirth',
+    render: (dateOfBirth: Date) => dayjs(dateOfBirth).format('DD/MM/YYYY')
   }, {
     title: 'Document Number',
     dataIndex: 'documentNumber',
@@ -51,28 +40,6 @@ const columns: TableProps<UserType>['columns'] = [
       </Space>
     )
   }
-]
-
-const data: UserType[] = [
-  {
-    id: '001',
-    firstName: 'Phillip',
-    lastName: 'Smith',
-    dateOfBirth: new Date(1990, 0, 1),
-    documentNumber: '12345678909',
-    email: 'email@example.com',
-    addresses: [],
-    phoneNumbers: [],
-  }, {
-    id: '002',
-    firstName: 'Phillip',
-    lastName: '2',
-    dateOfBirth: new Date(1990, 0, 1),
-    documentNumber: '50302006818',
-    email: 'outro_email@example.com',
-    addresses: [],
-    phoneNumbers: [],
-  },
 ]
 
 export default function UsersTable() {

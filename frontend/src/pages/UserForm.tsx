@@ -21,25 +21,28 @@ const { Title } = Typography;
 export default function UserForm() {
 
   const [form] = Form.useForm();
-  const [api] = notification.useNotification();
-
-  const openNotification = () => api.info({
-    message: 'Usuário criado com sucesso!',
-    placement: 'bottomLeft',
-  })
+  const [api, contextHolder] = notification.useNotification();
 
   const onFinish = (e: UserInputDTO) => {
     e = { ...e, documentNumber: e.documentNumber.replace(/\D/g, '') }
-    back.post('/', e).then((res) => {
-      console.log(res);
-      openNotification();
+    back.post('/', e).then(() => {
+      api.success({
+        message: 'Usuário criado com sucesso!',
+        placement: 'bottomLeft',
+      })
+    }).catch((error) => {
+      console.error(error);
+      api.error({
+        message: 'Erro ao criar usuário!',
+        placement: 'bottomLeft',
+      })
     })
     form.resetFields();
   }
 
-
   return (
     <div>
+      {contextHolder}
       <Title level={2}>User Form</Title>
       <Form
         form={form}
