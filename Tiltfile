@@ -23,3 +23,5 @@ docker_build(
 k8s_resource('backend-deployment', port_forwards=3001)
 
 k8s_resource('frontend-deployment', port_forwards=5173)
+
+k8s_resource('mongodb-deployment', port_forwards=27017)
