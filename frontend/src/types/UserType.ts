@@ -36,6 +36,7 @@ export type UserType = {
 }
 
 export type UserInputDTO = {
+  _id?: string;
   firstName: string;
   lastName: string;
   addresses: AddressInputDTO[];
