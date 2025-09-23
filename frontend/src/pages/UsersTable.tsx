@@ -6,6 +6,7 @@ import {
   Col,
   Skeleton,
   Popconfirm,
+  Modal,
 } from "antd";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -14,7 +15,7 @@ import { UserType } from "../types/UserType";
 
 
 export default function UsersTable() {
-
+  const [open, setOpen] = useState(false);
   const [users, setUsers] = useState<UserType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -32,6 +33,10 @@ export default function UsersTable() {
       setLoading(false);
     });
   }, []);
+
+  const showModal = () => {
+    setOpen(true);
+  }
 
   const handleDelete = (id: string) => {
     api.delete(`/${id}`).then(response => {
@@ -80,7 +85,21 @@ export default function UsersTable() {
             render: (_unused: unknown, record: UserType) => (
               <Space>
                 <Col className="action-buttons">
-                  <Button variant="outlined" color="primary">Edit</Button>
+                  <Button variant="outlined" color="primary" onClick={(showModal)}>Edit</Button>
+                  <Modal
+                    open={open}
+                    title="test modal"
+                    onCancel={() => {
+                      console.log('cancel clicked!')
+                      setOpen(false)
+                    }}
+                    onOk={() => {
+                      console.log('ok clicked!')
+                      setOpen(false)
+                    }}
+                  >
+                    <p>Modal content</p>
+                  </Modal>
                   <Popconfirm
                     title="Delete User"
                     description="Are you sure to delete this user?"

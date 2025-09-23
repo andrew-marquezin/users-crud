@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router'
 import './App.css'
 import UserForm from './pages/UserForm'
 import Home from './pages/Home'
-import UsersTable from './components/UsersTable'
+import UsersTable from './pages/UsersTable'
 import Layout from './components/Layout'
 import NotFound from './pages/NotFound'
 
