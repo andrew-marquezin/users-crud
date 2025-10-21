@@ -14,9 +14,9 @@ export type AddressInputDTO = {
 }
 
 export type PhoneType = {
-  id: string;
-  number: string;
-  type: string;
+  id?: string;
+  number?: string;
+  type?: string;
 }
 
 export type PhoneInputDTO = {
@@ -30,7 +30,7 @@ export type UserType = {
   lastName: string;
   addresses: AddressType[];
   phoneNumbers: PhoneType[];
-  dateOfBirth: Date;
+  dateOfBirth: string;
   email: string;
   documentNumber: string;
 }

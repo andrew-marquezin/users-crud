@@ -7,48 +7,62 @@ import {
   Input,
   Row
 } from "antd";
+import { PhoneType } from "../types/UserType";
 
-export default function PhoneForm() {
+export default function PhoneForm(props: {
+  phoneNumbers: PhoneType[];
+  userId: string;
+}) {
+
+  const [form] = Form.useForm();
+
   return (
-    <Form.List name="phoneNumbers">
-      {(fields, { add, remove }) => (
-        <Row gutter={16}>
-          {fields.map(({ key, name, ...restField }) => (
-            <Col xs={24} sm={12} md={12} lg={8} key={key}>
-              <Card style={{ marginBottom: 16 }}>
-                <Form.Item
-                  {...restField}
-                  label="Number"
-                  name={[name, 'number']}
-                >
-                  <Input placeholder="(11) 92345-6789" />
-                </Form.Item>
-                <Form.Item
-                  {...restField}
-                  label="Type"
-                  name={[name, 'type']}
-                >
-                  <Input placeholder="Mobile" />
-                </Form.Item>
-                <Button
-                  color="danger"
-                  variant="filled"
-                  onClick={() => remove(name)}
-                >
-                  <DeleteOutlined />
+    <Form
+      form={form}
+      autoComplete="off"
+      initialValues={props.phoneNumbers}
+      preserve={false}
+    >
+      <Form.List name="phoneNumbers">
+        {(fields, { add, remove }) => (
+          <Row gutter={16}>
+            {fields.map(({ key, name, ...restField }) => (
+              <Col xs={24} sm={12} md={12} lg={8} key={key}>
+                <Card style={{ marginBottom: 16 }}>
+                  <Form.Item
+                    {...restField}
+                    label="Number"
+                    name={[name, 'number']}
+                  >
+                    <Input placeholder="(11) 92345-6789" />
+                  </Form.Item>
+                  <Form.Item
+                    {...restField}
+                    label="Type"
+                    name={[name, 'type']}
+                  >
+                    <Input placeholder="Mobile" />
+                  </Form.Item>
+                  <Button
+                    color="danger"
+                    variant="filled"
+                    onClick={() => remove(name)}
+                  >
+                    <DeleteOutlined />
+                  </Button>
+                </Card>
+              </Col>
+            ))}
+            <Col>
+              <Form.Item>
+                <Button type="dashed" onClick={() => add()}>
+                  Add phone number
                 </Button>
-              </Card>
+              </Form.Item>
             </Col>
-          ))}
-          <Col>
-            <Form.Item>
-              <Button type="dashed" onClick={() => add()}>
-                Add phone number
-              </Button>
-            </Form.Item>
-          </Col>
-        </Row>
-      )}
-    </Form.List>
+          </Row>
+        )}
+      </Form.List>
+    </Form>
   )
 }

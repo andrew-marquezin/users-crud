@@ -12,6 +12,8 @@ import dayjs from "dayjs";
 import api from "../utils/api";
 import { UserInputDTO, UserType } from "../types/UserType";
 import UserModal from "../components/UserModal";
+import PhoneForm from "../components/PhoneForm";
+import AddressForm from "../components/AddressForm";
 
 
 export default function UsersTable() {
@@ -44,6 +46,18 @@ export default function UsersTable() {
       key: 'email',
     }
   ];
+
+  const expandedRowRender = (record: UserType) => {
+    const dataAddresses = record.addresses;
+    const dataPhones = record.phoneNumbers;
+
+    return (
+      <div>
+        <PhoneForm phoneNumbers={dataPhones} userId={record._id} />
+        <AddressForm addresses={dataAddresses} userId={record._id} />
+      </div>
+    )
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -118,7 +132,7 @@ export default function UsersTable() {
         : <div>
           <Typography.Title level={2}>Users Table</Typography.Title>
           <Table<UserType>
-            rowKey="_id"
+            rowKey={record => record._id}
             columns={[...columns,
             {
               title: 'Actions',
@@ -141,8 +155,9 @@ export default function UsersTable() {
               )
             }
             ]}
-            dataSource={users}
-            bordered={true}
+            dataSource={loading ? [] : users}
+            bordered
+            expandable={{ expandedRowRender }}
             pagination={false}
             scroll={{ x: 'max-content', y: 400 }}
           />
