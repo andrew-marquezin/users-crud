@@ -1,5 +1,6 @@
 import express from 'express';
 import userRouter from './routes/userRoutes';
+import authRouter from './routes/authRoutes';
 import cors from 'cors';
 
 const app = express();
@@ -16,5 +17,6 @@ app.get('/', (_req, res) => {
   res.json({ response: 'API is running...' });
 })
 app.use('/api/users', userRouter);
+app.use('/api/auth', authRouter);
 
 export { app };
