@@ -49,7 +49,7 @@ export default function UserForm() {
         name="userForm"
         onFinish={onFinish}
         requiredMark={false}
-        validateTrigger="onBlur"
+        validateTrigger={["onBlur", "onChange"]}
         initialValues={{ addresses: [], phoneNumbers: [] }}
         style={{ maxWidth: '500' }}
       >

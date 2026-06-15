@@ -6,14 +6,15 @@ import {
   Col,
   Skeleton,
   Popconfirm,
+  Form, notification,
 } from "antd";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import dayjs from "dayjs";
-import api from "../utils/api";
-import { UserInputDTO, UserType } from "../types/UserType";
+import {UserInputDTO, UserType} from "../types/UserType";
 import UserModal from "../components/UserModal";
 import PhoneForm from "../components/PhoneForm";
 import AddressForm from "../components/AddressForm";
+import back from "../utils/api";
 
 
 export default function UsersTable() {
@@ -21,6 +22,8 @@ export default function UsersTable() {
   const [open, setOpen] = useState(false);
   const [users, setUsers] = useState<UserType[]>([]);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
+  const [api, contextHolder] = notification.useNotification();
+
 
   const columns = [
     {
@@ -48,20 +51,42 @@ export default function UsersTable() {
   ];
 
   const expandedRowRender = (record: UserType) => {
-    const dataAddresses = record.addresses;
-    const dataPhones = record.phoneNumbers;
-
     return (
-      <div>
-        <PhoneForm phoneNumbers={dataPhones} userId={record._id} />
-        <AddressForm addresses={dataAddresses} userId={record._id} />
-      </div>
+      <Form
+        initialValues={{addresses: record.addresses, phoneNumbers: record.phoneNumbers}}
+        onFinish={(values) => {
+          back.put(`/${record._id}`, values).then(response => {
+            if (response.status === 200) {
+              setUsers(users.map((user) =>
+                user._id === record._id ? response.data.data : user
+              ));
+              api.success({
+                message: 'Data saved successfully!',
+                placement: 'bottomLeft',
+              })
+            }
+          }).catch((e) => {
+            // remover depois
+            console.error('Error updating user: ', e);
+            api.error({
+              message: 'Error while saving data!',
+              placement: 'bottomLeft',
+            })
+          })
+        }}
+      >
+        <Typography.Title level={5}>Phone Numbers</Typography.Title>
+        <PhoneForm/>
+        <Typography.Title level={5}>Addresses</Typography.Title>
+        <AddressForm/>
+        <Button type="primary" htmlType="submit">Save</Button>
+      </Form>
     )
   }
 
   useEffect(() => {
     setLoading(true);
-    api.get('/').then(response => {
+    back.get('/').then(response => {
       if (response.status === 200) {
         if (Array.isArray(response.data.data)) {
           setUsers(response.data.data);
@@ -89,9 +114,9 @@ export default function UsersTable() {
   }
 
   const handleFinish = (values: UserInputDTO) => {
-    values = { ...values, documentNumber: values.documentNumber.replace(/\D/g, '') };
+    values = {...values, documentNumber: values.documentNumber.replace(/\D/g, '')};
     if (editingUser) {
-      api.put(`/${editingUser._id}`, values).then(response => {
+      back.put(`/${editingUser._id}`, values).then(response => {
         if (response.status === 200) {
           setUsers(users.map((user) =>
             user._id === editingUser._id ? response.data.data : user
@@ -101,7 +126,7 @@ export default function UsersTable() {
         console.error('Error updating user: ', e);
       })
     } else {
-      api.post('/', values).then(response => {
+      back.post('/', values).then(response => {
         if (response.status === 201) {
           setUsers([...users, response.data.data]);
         } else {
@@ -115,7 +140,7 @@ export default function UsersTable() {
   }
 
   const handleDelete = (id: string) => {
-    api.delete(`/${id}`).then(response => {
+    back.delete(`/${id}`).then(response => {
       if (response.status === 204) {
         setUsers(users.filter(user => user._id !== id));
       } else {
@@ -128,40 +153,42 @@ export default function UsersTable() {
 
   return (
     <>
-      {loading ? <Skeleton active />
+      {loading ? <Skeleton active/>
         : <div>
+          {contextHolder}
           <Typography.Title level={2}>Users Table</Typography.Title>
           <Table<UserType>
             rowKey={record => record._id}
             columns={[...columns,
-            {
-              title: 'Actions',
-              key: 'actions',
-              fixed: 'right',
-              render: (_unused: unknown, record: UserType) => (
-                <Space>
-                  <Col className="action-buttons">
-                    <Button variant="outlined" color="primary" onClick={() => handleEditUser(record)}>Edit</Button>
-                    <Popconfirm
-                      title="Delete User"
-                      description="Are you sure to delete this user?"
-                      placement="bottomRight"
-                      onConfirm={() => handleDelete(record._id)}
-                    >
-                      <Button variant="filled" color="danger">Delete</Button>
-                    </Popconfirm>
-                  </Col>
-                </Space>
-              )
-            }
+              {
+                title: 'Actions',
+                key: 'actions',
+                fixed: 'right',
+                render: (_unused: unknown, record: UserType) => (
+                  <Space>
+                    <Col className="action-buttons">
+                      <Button variant="outlined" color="primary"
+                              onClick={() => handleEditUser(record)}>Edit</Button>
+                      <Popconfirm
+                        title="Delete User"
+                        description="Are you sure to delete this user?"
+                        placement="bottomRight"
+                        onConfirm={() => handleDelete(record._id)}
+                      >
+                        <Button variant="filled" color="danger">Delete</Button>
+                      </Popconfirm>
+                    </Col>
+                  </Space>
+                )
+              }
             ]}
             dataSource={loading ? [] : users}
             bordered
-            expandable={{ expandedRowRender }}
+            expandable={{expandedRowRender}}
             pagination={false}
-            scroll={{ x: 'max-content', y: 400 }}
+            scroll={{x: 'max-content', y: 400}}
           />
-          <Button type="primary" style={{ marginTop: 16 }} onClick={handleAddUser}>
+          <Button type="primary" style={{marginTop: 16}} onClick={handleAddUser}>
             Add User
           </Button>
           <UserModal

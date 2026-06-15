@@ -7,22 +7,9 @@ import {
   Input,
   Row
 } from "antd";
-import { PhoneType } from "../types/UserType";
 
-export default function PhoneForm(props: {
-  phoneNumbers: PhoneType[];
-  userId: string;
-}) {
-
-  const [form] = Form.useForm();
-
+export default function PhoneForm() {
   return (
-    <Form
-      form={form}
-      autoComplete="off"
-      initialValues={props.phoneNumbers}
-      preserve={false}
-    >
       <Form.List name="phoneNumbers">
         {(fields, { add, remove }) => (
           <Row gutter={16}>
@@ -63,6 +50,5 @@ export default function PhoneForm(props: {
           </Row>
         )}
       </Form.List>
-    </Form>
   )
 }
