@@ -3,14 +3,16 @@ import { Link } from "react-router"
 
 export default function Home() {
   return (
-    <div>
+    <div id="home-container">
       <Typography.Title level={1}>Home Page</Typography.Title>
-      <Link to={'/userForm'}>
-        <Button>Create User</Button>
-      </Link>
-      <Link to={'/usersTable'}>
-        <Button>Table of Users</Button>
-      </Link>
+      <div>
+        <Link to={'/userForm'}>
+          <Button className="home-button">Create User</Button>
+        </Link>
+        <Link to={'/usersTable'}>
+          <Button className="home-button">Table of Users</Button>
+        </Link>
+      </div>
       {/* <button onClick={() => setShowModal(true)}>
         Create User
       </button>

@@ -6,6 +6,7 @@ import {
   Row,
   Col,
   DatePicker,
+  notification,
 } from "antd"
 import dayjs from "dayjs"
 import { normalizeDocumentNumber } from "../utils/Normalizers";
@@ -13,29 +14,42 @@ import { validateDocumentNumberInput } from "../utils/Validators";
 import { UserInputDTO } from "../types/UserType"
 import AddressForm from "../components/AddressForm";
 import PhoneForm from "../components/PhoneForm";
-import api from "../utils/api";
+import back from "../utils/api";
 
 const { Title } = Typography;
 
 export default function UserForm() {
 
   const [form] = Form.useForm();
+  const [api, contextHolder] = notification.useNotification();
 
   const onFinish = (e: UserInputDTO) => {
     e = { ...e, documentNumber: e.documentNumber.replace(/\D/g, '') }
-    api.post('/', e).then((res) => console.log(res))
+    back.post('/', e).then(() => {
+      api.success({
+        message: 'Usuário criado com sucesso!',
+        placement: 'bottomLeft',
+      })
+    }).catch((error) => {
+      console.error(error);
+      api.error({
+        message: 'Erro ao criar usuário!',
+        placement: 'bottomLeft',
+      })
+    })
     form.resetFields();
   }
 
   return (
     <div>
+      {contextHolder}
       <Title level={2}>User Form</Title>
       <Form
         form={form}
         name="userForm"
         onFinish={onFinish}
         requiredMark={false}
-        validateTrigger="onBlur"
+        validateTrigger={["onBlur", "onChange"]}
         initialValues={{ addresses: [], phoneNumbers: [] }}
         style={{ maxWidth: '500' }}
       >
@@ -75,7 +89,7 @@ export default function UserForm() {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               getValueProps={(value) => ({ value: value && dayjs(value, 'DD/MM/YYYY') })}
-              normalize={(value) => value && value.format('DD-MM-YYYY')}
+              // normalize={(value) => value && value.format('DD-MM-YYYY')}
               rules={[
                 { required: true, message: 'Please input your birth date!' },
               ]}

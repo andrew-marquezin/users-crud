@@ -1,4 +1,5 @@
 function validateCPF(cpf: string): boolean {
+  if (!cpf) return false;
   cpf = cpf.replace(/\D/g, '');
 
   if (cpf.length === 11) {
